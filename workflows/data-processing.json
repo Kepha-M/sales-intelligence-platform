@@ -1,0 +1,358 @@
+{
+  "name": "Car Sales Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const data = items.map(i => i.json);\n\nlet revenueByCountry = {};\nlet carSales = {};\nlet segmentStats = {};\nlet revenueByCity = {};\n\ndata.forEach(d => {\n  const revenue = Number(d.TotalPrice);\n  const qty = Number(d.Quantity);\n  const profit = Number(d[\"Total Profit\"]);\n\n  // Revenue by country\n  revenueByCountry[d.Country] = (revenueByCountry[d.Country] || 0) + revenue;\n\n  // Top cars\n  const car = `${d.Brand} ${d.Model}`;\n  carSales[car] = (carSales[car] || 0) + qty;\n\n  // Segment\n  if (!segmentStats[d.Segment]) {\n    segmentStats[d.Segment] = { sales: 0, profit: 0 };\n  }\n  segmentStats[d.Segment].sales += qty;\n  segmentStats[d.Segment].profit += profit;\n\n  // City revenue\n  revenueByCity[d.City] = (revenueByCity[d.City] || 0) + revenue;\n});\n\n// Top 3 cars\nconst topCars = Object.entries(carSales)\n  .sort((a,b) => b[1] - a[1])\n  .slice(0,3);\n\nreturn [{\n  json: {\n    revenueByCountry,\n    topCars,\n    segmentStats,\n    revenueByCity\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "f9d17900-ac2f-4fe9-ba65-0e5f1e182331",
+      "name": "Generate Reports"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 241445129,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=241445129"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "30bd9827-8db0-4d67-94b4-adce17b3ba21",
+      "name": "Get Sales",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yP4XevCL5r8XgBt7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1486468498,
+          "mode": "list",
+          "cachedResultName": "Models",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=1486468498"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        0
+      ],
+      "id": "97aca3f8-9b5b-41f7-a738-0f605de9580c",
+      "name": "Get Models",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yP4XevCL5r8XgBt7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 189391864,
+          "mode": "list",
+          "cachedResultName": "Dealers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=189391864"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        0
+      ],
+      "id": "45964e93-6c19-4527-9ab2-7bbb49247569",
+      "name": "Get Dealers",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yP4XevCL5r8XgBt7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const sales = $items(\"Get Sales\").map(i => i.json);\nconst dealers = $items(\"Get Dealers\").map(i => i.json);\nconst models = $items(\"Get Models\").map(i => i.json);\n\n// Create lookup maps\nconst dealerMap = {};\ndealers.forEach(d => dealerMap[d.DealerID] = d);\n\nconst modelMap = {};\nmodels.forEach(m => modelMap[m.ModelID] = m);\n\n// Join all\nconst result = sales.map(s => {\n  const dealer = dealerMap[s.DealerID] || {};\n  const model = modelMap[s.ModelID] || {};\n\n  return {\n    ...s,\n    City: dealer.City,\n    Country: dealer.Country,\n    Segment: model.Segment,\n    Brand: model.Brand,\n    Model: model.Model\n  };\n});\n\nreturn result.map(r => ({ json: r }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        0
+      ],
+      "id": "9a9a9141-3f7b-45f2-a01b-c15d9569dd9b",
+      "name": "Join Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\n\nreturn [\n  {\n    json: {\n      id: 1,\n      data: JSON.stringify(data),\n      updatedAt: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        0
+      ],
+      "id": "e05b6acc-8bc3-4e94-9b14-0ff9d5489cb4",
+      "name": "Caching report",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1460894520,
+          "mode": "list",
+          "cachedResultName": "Dashboard_Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=1460894520"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "1",
+            "json": "={{ $json.data }}",
+            "updatedAt": "={{ $json.updatedAt }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "json",
+              "displayName": "json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updatedAt",
+              "displayName": "updatedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "853204c1-b689-4efd-8855-f2de7f47db87",
+      "name": "Store reports",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yP4XevCL5r8XgBt7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 241445129,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=241445129"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -224
+      ],
+      "id": "665ee959-ac53-4f8f-86b5-480f9c7581c8",
+      "name": "On Add/Update Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "tBtZ2U9Z4okmzkDn",
+          "name": "Google Sheets Trigger OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Sales": {
+      "main": [
+        [
+          {
+            "node": "Get Dealers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Models": {
+      "main": [
+        [
+          {
+            "node": "Join Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Dealers": {
+      "main": [
+        [
+          {
+            "node": "Get Models",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Join Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Reports": {
+      "main": [
+        [
+          {
+            "node": "Caching report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caching report": {
+      "main": [
+        [
+          {
+            "node": "Store reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On Add/Update Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6e005738-fce8-4a57-9f88-bc4915de7755",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e843036c123bc9bd40fd9bab9a2b12f63c877c0679c448587f49396edffe7bac"
+  },
+  "id": "fqkGY69p1FZL726w",
+  "tags": []
+}

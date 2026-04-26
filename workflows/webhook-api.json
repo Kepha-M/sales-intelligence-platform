@@ -1,0 +1,141 @@
+{
+  "name": "Car Sales API (Cached)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "d329c0d1-f675-4e6a-a03d-534c558ec67e",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08f2555b-72dd-4866-a8c1-27e7afb6e07a",
+      "name": "car-sales-dashboard",
+      "webhookId": "d329c0d1-f675-4e6a-a03d-534c558ec67e"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc",
+          "mode": "list",
+          "cachedResultName": "Top Cars Database Africa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1460894520,
+          "mode": "list",
+          "cachedResultName": "Dashboard_Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12M7HiNluMkWwczHwge49GgHAoKw6ax8C9XkiKHs12uc/edit#gid=1460894520"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "1"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9a84bf54-23da-4b0d-bbdc-c5d52ab09596",
+      "name": "Read cache",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yP4XevCL5r8XgBt7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\n\nreturn [\n  {\n    json: {\n      id: 1,\n      data: JSON.stringify(data),   // ✅ MUST be \"data\"\n      updatedAt: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "04274310-2552-4d6d-9fb8-3ff66338f867",
+      "name": "Parse JSON"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "c5308130-0240-4f4a-9f8a-87012e94bc86",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "car-sales-dashboard": {
+      "main": [
+        [
+          {
+            "node": "Read cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read cache": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5e96ca85-d7ad-462d-8584-2bf6053abc40",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e843036c123bc9bd40fd9bab9a2b12f63c877c0679c448587f49396edffe7bac"
+  },
+  "id": "unW6abRDHvOXlvRD",
+  "tags": []
+}
